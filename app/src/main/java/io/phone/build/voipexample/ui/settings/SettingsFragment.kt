@@ -182,7 +182,7 @@ class SettingsFragment : PreferenceFragmentCompat() {
     private fun updateVoipgridAuthenticationStatus() {
         val queue = Volley.newRequestQueue(requireActivity())
 
-        val url = "https://api-prod.mipbx.vn/api/v1/users/login"
+        val url = "xxxxx"
 
         val requestData = JSONObject().apply {
             put("email", prefs.getString("voipgrid_username", ""))

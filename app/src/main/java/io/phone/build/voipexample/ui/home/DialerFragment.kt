@@ -73,7 +73,6 @@ class DialerFragment : Fragment(), PILEventListener {
             if (ContextCompat.checkSelfPermission(requireActivity(), Manifest.permission.CALL_PHONE) == PackageManager.PERMISSION_GRANTED) {
                 pil.call(number)
             }
-            // pil.call(number)
         }
     }
 }

@@ -30,6 +30,63 @@ android {
     }
 }
 
+/*val sourcesJar by tasks.registering(Jar::class) {
+    archiveClassifier.set("sources")
+    from(android.sourceSets.getByName("main").java.srcDirs)
+}
+
+afterEvaluate {
+    publishing {
+        publications {
+            create<MavenPublication>("release") {
+                from(components.findByName("release"))
+
+                groupId "io.phone.build.sdk"
+                artifactId "voipLib"
+                version "0.1.0-alpha"
+
+            }
+        }
+    }
+}*/
+
+afterEvaluate {
+    android.libraryVariants.each {variant ->
+        publishing.publications.create(variant.name, MavenPublication){
+            from components.findByName(variant.name)
+
+            /*artifact androidJavadocsJar
+            artifact androidSourceJar*/
+
+            groupId "io.phone.build.sdk"
+            artifactId "voipLib"
+            version "0.1.0-alpha"
+            // artifact("$buildDir/outputs/aar/VoipLib-release.aar")
+        }
+    }
+}
+
+task androidJavadocs(type: Javadoc){
+    source = android.sourceSets.main.java.srcDirs
+    classpath += project.files(android.getBootClasspath().join(File.pathSeparator))
+    android.libraryVariants.all {variant ->
+        owner.classpath += variant.javaCompileProvider.get().classpath
+    }
+    options {
+        memberLevel = JavadocMemberLevel.PROTECTED
+    }
+}
+
+task androidJavadocsJar(type: Jar, dependsOn: androidJavadocs){
+    archiveClassifier.set("javadoc")
+    from androidJavadocs.destinationDir
+}
+
+task androidSourceJar(type: Jar){
+    archiveClassifier.set("source")
+    from android.sourceSets.main.java.srcDirs
+}
+
 dependencies {
 
     implementation libs.androidx.core.ktx
@@ -44,6 +101,5 @@ dependencies {
     implementation("io.insert-koin:koin-android:2.2.2")
     implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.4.0")
     implementation(libs.linphone.sdk.android)
-//    implementation "org.linphone.no-video:linphone-sdk-android:5.1.36"
     implementation("androidx.lifecycle:lifecycle-process:2.5.0")
 }
