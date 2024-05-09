@@ -1,3 +1,17 @@
+buildscript {
+    ext.kotlin_version = '1.7.10'
+    repositories {
+        google()
+        mavenCentral()
+        mavenLocal()
+    }
+
+    dependencies {
+        classpath libs.gradle
+        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
+    }
+}
+
 plugins {
     alias(libs.plugins.androidLibrary)
     alias(libs.plugins.jetbrainsKotlinAndroid)
@@ -47,7 +61,7 @@ publishing {
         maven(MavenPublication) {
             groupId = 'com.github.hieujames'
             artifactId = 'VoipLibAndroid'
-            version = "1.0.3"
+            version = "1.0.4"
             pom {
                 description = 'DESCRIPTION'
             }
