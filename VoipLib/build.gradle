@@ -19,6 +19,7 @@ android {
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+            consumerProguardFiles 'consumer-rules.pro'
         }
     }
     compileOptions {
@@ -30,41 +31,49 @@ android {
     }
 }
 
-/*val sourcesJar by tasks.registering(Jar::class) {
-    archiveClassifier.set("sources")
-    from(android.sourceSets.getByName("main").java.srcDirs)
+java {
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(17)
+    }
 }
 
-afterEvaluate {
-    publishing {
-        publications {
-            create<MavenPublication>("release") {
-                from(components.findByName("release"))
 
-                groupId "io.phone.build.sdk"
-                artifactId "voipLib"
-                version "0.1.0-alpha"
+java {
+    sourceCompatibility = JavaVersion.VERSION_17
+    targetCompatibility = JavaVersion.VERSION_17
+}
 
+publishing {
+    publications {
+        maven(MavenPublication) {
+            groupId = 'com.github.hieujames'
+            artifactId = 'VoipLibAndroid'
+            version = "1.0.0"
+            pom {
+                description = 'DESCRIPTION'
             }
         }
     }
-}*/
-
-afterEvaluate {
-    android.libraryVariants.each {variant ->
-        publishing.publications.create(variant.name, MavenPublication){
-            from components.findByName(variant.name)
-
-            /*artifact androidJavadocsJar
-            artifact androidSourceJar*/
-
-            groupId "io.phone.build.sdk"
-            artifactId "voipLib"
-            version "0.1.0-alpha"
-            // artifact("$buildDir/outputs/aar/VoipLib-release.aar")
-        }
+    repositories {
+        mavenLocal()
     }
 }
+
+//afterEvaluate {
+//    android.libraryVariants.each {variant ->
+//        publishing.publications.create(variant.name, MavenPublication){
+//            from components.findByName(variant.name)
+//
+//            /*artifact androidJavadocsJar
+//            artifact androidSourceJar*/
+//
+//            groupId "io.phone.build.sdk"
+//            artifactId "voipLib"
+//            version "0.1.0-alpha"
+//            // artifact("$buildDir/outputs/aar/VoipLib-release.aar")
+//        }
+//    }
+//}
 
 task androidJavadocs(type: Javadoc){
     source = android.sourceSets.main.java.srcDirs
