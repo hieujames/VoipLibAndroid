@@ -108,6 +108,7 @@ internal class LinphoneSipRegisterRepository(
             val identity = Factory.instance().createAddress("sip:${auth.username}@${auth.domain}")
             accountParams.identityAddress = identity
             // We also need to configure where the proxy server is located
+
             val address = Factory.instance().createAddress("sip:${auth.proxy}:${auth.port};transport=${auth.transport}")
             // We use the Address object to easily set the transport protocol
             address?.transport = TransportType.Tls
