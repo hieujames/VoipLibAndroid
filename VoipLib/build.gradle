@@ -37,7 +37,6 @@ java {
     }
 }
 
-
 java {
     sourceCompatibility = JavaVersion.VERSION_17
     targetCompatibility = JavaVersion.VERSION_17
@@ -48,7 +47,7 @@ publishing {
         maven(MavenPublication) {
             groupId = 'com.github.hieujames'
             artifactId = 'VoipLibAndroid'
-            version = "1.0.0"
+            version = "1.0.1"
             pom {
                 description = 'DESCRIPTION'
             }
@@ -58,22 +57,6 @@ publishing {
         mavenLocal()
     }
 }
-
-//afterEvaluate {
-//    android.libraryVariants.each {variant ->
-//        publishing.publications.create(variant.name, MavenPublication){
-//            from components.findByName(variant.name)
-//
-//            /*artifact androidJavadocsJar
-//            artifact androidSourceJar*/
-//
-//            groupId "io.phone.build.sdk"
-//            artifactId "voipLib"
-//            version "0.1.0-alpha"
-//            // artifact("$buildDir/outputs/aar/VoipLib-release.aar")
-//        }
-//    }
-//}
 
 task androidJavadocs(type: Javadoc){
     source = android.sourceSets.main.java.srcDirs
