@@ -47,7 +47,7 @@ publishing {
         maven(MavenPublication) {
             groupId = 'com.github.hieujames'
             artifactId = 'VoipLibAndroid'
-            version = "1.0.2"
+            version = "1.0.3"
             pom {
                 description = 'DESCRIPTION'
             }
