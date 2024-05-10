@@ -31,16 +31,15 @@ android {
     }
 }
 
-publishing {
-    publications {
-        maven(MavenPublication) {
-            groupId = 'com.github.hieujames'
-            artifactId = 'VoipLibAndroid'
-            version = "1.0.0"
+afterEvaluate {
+    android.libraryVariants.each { variant->
+        publishing.publications.create(variant.name, MavenPublication) {
+            from components.findByName(variant.name)
+
+            groupId = "io.phone.voiplib"
+            artifactId = "VoipLibAndroid"
+            version= "1.0.6"
         }
-    }
-    repositories {
-        mavenLocal()
     }
 }
 
