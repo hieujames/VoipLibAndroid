@@ -36,9 +36,9 @@ afterEvaluate {
         publishing.publications.create(variant.name, MavenPublication) {
             from components.findByName(variant.name)
 
-            groupId = "io.phone.voiplib"
+            groupId = "com.github.hieujames"
             artifactId = "VoipLibAndroid"
-            version= "1.0.6"
+            version= "1.0.7"
         }
     }
 }
