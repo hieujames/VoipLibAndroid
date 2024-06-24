@@ -38,7 +38,7 @@ afterEvaluate {
 
             groupId = "com.github.hieujames"
             artifactId = "VoipLibAndroid"
-            version= "1.0.8"
+            version= "1.0.9"
         }
     }
 }
