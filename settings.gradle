@@ -16,12 +16,6 @@ dependencyResolutionManagement {
             dirs 'VoipLib/libs'
         }
         maven { url 'https://jitpack.io' }
-        maven { url 'https://repositoriesmitek.jfrog.io/artifactory/downloadrepo-libs-release/'
-            credentials {
-                username = ""
-                password = ""
-            }
-        }
         // maven { url 'https://rnd.mitek.vn/dist/uploads/FILES_MITEK_CENTER/files/RnD/Source-code/LinePhone/SDK-Repo/'}
     }
 }
