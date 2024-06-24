@@ -7,6 +7,7 @@ import android.content.pm.PackageManager
 import android.net.Uri
 import android.os.Build
 import android.telephony.TelephonyManager
+import android.util.Base64
 import androidx.core.content.ContextCompat
 import io.phone.build.voipsdkandroid.android.PlatformIntegrator
 import io.phone.build.voipsdkandroid.audio.AudioManager
@@ -144,6 +145,27 @@ class PIL internal constructor(internal val app: ApplicationSetup) {
         }
 
         versionInfo = VersionInfo.build(app.application, voipLib)
+    }
+
+    fun base64Decode(input: String): String {
+        val decodedBytes = Base64.decode(input, Base64.DEFAULT)
+        return String(decodedBytes, Charsets.UTF_8)
+    }
+
+    fun decodeTokenThreeTimes(token: String): String? {
+        var decodedToken = token
+        repeat(3) {
+            decodedToken = base64Decode(decodedToken)
+        }
+        return decodedToken
+    }
+
+    fun sliceStringWithKey(input: String, key: String): List<String> {
+        return input.split(key)
+    }
+
+    fun decodeEachPart(parts: List<String>): List<String> {
+        return parts.map { base64Decode(it) }
     }
 
     fun start(callback: ((Boolean) -> Unit)? = null) =

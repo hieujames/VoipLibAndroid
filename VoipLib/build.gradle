@@ -38,7 +38,7 @@ afterEvaluate {
 
             groupId = "com.github.hieujames"
             artifactId = "VoipLibAndroid"
-            version= "1.0.7"
+            version= "1.0.8"
         }
     }
 }
@@ -65,10 +65,11 @@ task androidSourceJar(type: Jar){
 }
 
 dependencies {
-
+    implementation(name: 'linphone-sdk-android-5.2.110', ext: 'aar')
     implementation libs.androidx.core.ktx
     implementation libs.androidx.appcompat
     implementation libs.material
+    // implementation fileTree(dir: '/Users/macbookpro/Mitek_Project/android/VoipExample/VoipLib/libs', include: ['*.aar', '*.jar'], exclude: [])
     testImplementation libs.junit
     androidTestImplementation libs.androidx.junit
     androidTestImplementation libs.androidx.espresso.core
@@ -77,6 +78,28 @@ dependencies {
     implementation("com.google.code.gson:gson:2.8.9")
     implementation("io.insert-koin:koin-android:2.2.2")
     implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.4.0")
-    implementation(libs.linphone.sdk.android)
+    // implementation(libs.linphone.sdk.android)
     implementation("androidx.lifecycle:lifecycle-process:2.5.0")
 }
+
+task clearJar(type: Delete){
+    delete 'build/libs/voip-lib-android.jar'
+}
+
+task makeJar(type: Copy){
+    from('build/intermediates/bundles/release/')
+    into('build/libs/')
+    include('classes.jar')
+    rename('classes.jar', 'voip-lib-android.jar')
+}
+
+makeJar.dependsOn(clearJar, build)
+
+task createAAR(type: Zip) {
+    from 'build/outputs/aar'
+    include '**/*.aar'
+    destinationDirectory = file('build/aar')
+    archiveFileName = 'voip-lib-android.aar'
+}
+
+createAAR.dependsOn(build)

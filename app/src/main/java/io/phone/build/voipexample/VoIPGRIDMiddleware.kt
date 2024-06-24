@@ -4,18 +4,12 @@ import android.content.Context
 import android.os.Build
 import android.util.Base64
 import androidx.preference.PreferenceManager
-//import com.google.firebase.messaging.RemoteMessage
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import io.phone.build.voipsdkandroid.push.Middleware
-import io.phone.build.voipsdkandroid.push.UnavailableReason
-import okhttp3.Call
-import okhttp3.Callback
 import okhttp3.FormBody
 import okhttp3.OkHttpClient
 import okhttp3.Request
-import okhttp3.Response
-import java.io.IOException
 
 class VoIPGRIDMiddleware(private val context: Context) : Middleware {
 

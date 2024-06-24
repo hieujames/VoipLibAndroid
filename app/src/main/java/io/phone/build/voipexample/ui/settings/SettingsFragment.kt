@@ -160,7 +160,7 @@ class SettingsFragment : PreferenceFragmentCompat() {
         findPreference<Preference>("voipgrid_middleware_register")?.setOnPreferenceClickListener {
             GlobalScope.launch {
                 val newToken = prefs.getString("voipgrid_api_token", "")
-                val message = if (voIPGRIDMiddleware.register(newToken.toString())) "Registered!" else "Registration failed..."
+                performRegister(newToken.toString())
             }
             true
         }
@@ -182,7 +182,7 @@ class SettingsFragment : PreferenceFragmentCompat() {
     private fun updateVoipgridAuthenticationStatus() {
         val queue = Volley.newRequestQueue(requireActivity())
 
-        val url = "xxxxx"
+        val url = "https://api-prod.mipbx.vn/api/v1/users/login"
 
         val requestData = JSONObject().apply {
             put("email", prefs.getString("voipgrid_username", ""))
@@ -216,7 +216,24 @@ class SettingsFragment : PreferenceFragmentCompat() {
 
     private fun updateVoipgridSummary(authenticated: Boolean, token: String? = null) {
         print("[RETURN TOKEN SUMMARY] $token")
-        val summary = if (authenticated) "Authenticated ($token)" else "Authentication failed"
+        val summary = if (authenticated) "$token" else "Authentication failed"
+
+//        val tripleEncodedToken = pil.decodeTokenThreeTimes(token.toString())
+//        println("[RETURN] Token đã mã hóa 3 lần: $tripleEncodedToken")
+//
+//        if (tripleEncodedToken != null) {
+//
+//            val key = "b6aed9ab7cdf85432c321757b4d48153"
+//            val slicedStrings = pil.sliceStringWithKey(tripleEncodedToken, key)
+//            println("[RETURN] Chuỗi đã cắt: $slicedStrings")
+//            val decodedParts = pil.decodeEachPart(slicedStrings)
+//            println("[RETURN] Các phần tử đã giải mã: $decodedParts")
+//            decodedParts.forEachIndexed { index, part ->
+//                println("Phần tử $index: $part")
+//            }
+//        } else {
+//            println("[RETURN] Mã hóa thất bại")
+//        }
 
         activity?.runOnUiThread {
             findPreference<Preference>("voipgrid_status")?.summaryProvider = Preference.SummaryProvider<Preference> {
@@ -227,6 +244,59 @@ class SettingsFragment : PreferenceFragmentCompat() {
             findPreference<Preference>("voipgrid_middleware_unregister")?.isEnabled = authenticated
         }
 
+    }
+
+    private fun performRegister(token: String) {
+        print("[RETURN TOKEN SUMMARY] $token")
+        findPreference<Preference>("status")?.summaryProvider = Preference.SummaryProvider<Preference> {
+            "Checking authentication..."
+        }
+
+//        val tripleEncodedToken = pil.decodeTokenThreeTimes(token.toString())
+//        println("[RETURN] Token đã mã hóa 3 lần: $tripleEncodedToken")
+//
+//        if (tripleEncodedToken != null) {
+//
+//            val key = "b6aed9ab7cdf85432c321757b4d48153"
+//            val slicedStrings = pil.sliceStringWithKey(tripleEncodedToken, key)
+//            println("[RETURN] Chuỗi đã cắt: $slicedStrings")
+//            val decodedParts = pil.decodeEachPart(slicedStrings)
+//            println("[RETURN] Các phần tử đã giải mã: $decodedParts")
+//            decodedParts.forEachIndexed { index, part ->
+//                println("Phần tử $index: $part")
+//                val username = part[3].toString()
+//                val password = part[4].toString()
+//                val domain = part[0].toString()
+//                val port = 5567
+//                val proxy = part[2].toString()
+//                val transport = part[5].toString()
+//
+//                if (username.isNotBlank() && password.isNotBlank() && domain.isNotBlank() && port != 0 && proxy.isNotBlank() && transport.isNotBlank()) {
+//                    pil.auth = Auth(
+//                        username = username,
+//                        password = password,
+//                        domain = domain,
+//                        port = port,
+//                        proxy = proxy,
+//                        transport = transport,
+//                        secure = true
+//                    )
+//                }
+//
+//                GlobalScope.launch(Dispatchers.IO) {
+//                    val summary = if (pil.performRegistrationCheck()) "Authenticated" else "Authentication failed"
+//
+//                    activity?.runOnUiThread {
+//                        findPreference<Preference>("status")?.summaryProvider = Preference.SummaryProvider<Preference> {
+//                            summary
+//                        }
+//                    }
+//                }
+//            }
+//
+//        } else {
+//            println("[RETURN] Mã hóa thất bại")
+//        }
     }
 
     /**
