@@ -15,8 +15,6 @@ dependencyResolutionManagement {
         flatDir {
             dirs 'VoipLib/libs'
         }
-        maven { url 'https://jitpack.io' }
-        // maven { url 'https://rnd.mitek.vn/dist/uploads/FILES_MITEK_CENTER/files/RnD/Source-code/LinePhone/SDK-Repo/'}
     }
 }
 
