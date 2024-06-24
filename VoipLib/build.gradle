@@ -69,16 +69,14 @@ dependencies {
     implementation libs.androidx.core.ktx
     implementation libs.androidx.appcompat
     implementation libs.material
-    // implementation fileTree(dir: '/Users/macbookpro/Mitek_Project/android/VoipExample/VoipLib/libs', include: ['*.aar', '*.jar'], exclude: [])
     testImplementation libs.junit
     androidTestImplementation libs.androidx.junit
     androidTestImplementation libs.androidx.espresso.core
-
+    // Init Local File Name
     implementation("androidx.media:media:1.2.0")
     implementation("com.google.code.gson:gson:2.8.9")
     implementation("io.insert-koin:koin-android:2.2.2")
     implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.4.0")
-    // implementation(libs.linphone.sdk.android)
     implementation("androidx.lifecycle:lifecycle-process:2.5.0")
 }
 
