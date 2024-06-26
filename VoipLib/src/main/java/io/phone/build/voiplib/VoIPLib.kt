@@ -18,7 +18,7 @@ class VoIPLib {
     private val sipRegisterRepository: LinphoneSipRegisterRepository by di.koin.inject()
     private val sipCallControlsRepository: LinphoneSipActiveCallControlsRepository by di.koin.inject()
     private val sipSessionRepository: LinphoneSipSessionRepository by di.koin.inject()
-    private val linphoneCoreInstanceManager: LinphoneCoreInstanceManager by di.koin.inject()
+    private val mifoneCoreInstanceManager: LinphoneCoreInstanceManager by di.koin.inject()
 
     /**
      * This needs to be called whenever this library needs to initialize. Without it, no other calls
@@ -26,7 +26,7 @@ class VoIPLib {
      */
     fun initialize(config: Config): VoIPLib {
         Factory.instance()
-        linphoneCoreInstanceManager.initializeLinphone(config)
+        mifoneCoreInstanceManager.initializeMiFone(config)
         return this
     }
 
@@ -35,10 +35,10 @@ class VoIPLib {
      *
      */
     val isInitialized: Boolean
-        get() = linphoneCoreInstanceManager.state.initialized
+        get() = mifoneCoreInstanceManager.state.initialized
 
     val isNetworkReachable
-        get() = linphoneCoreInstanceManager.safeLinphoneCore?.isNetworkReachable ?: false
+        get() = mifoneCoreInstanceManager.safeLinphoneCore?.isNetworkReachable ?: false
 
     /**
      * This registers your user on SIP. You need this before placing a call.
@@ -68,7 +68,7 @@ class VoIPLib {
      * is waking from the background.
      *
      */
-    fun wake() = linphoneCoreInstanceManager.safeLinphoneCore?.ensureRegistered()
+    fun wake() = mifoneCoreInstanceManager.safeLinphoneCore?.ensureRegistered()
 
     /**
      * Whether or not the microphone is currently muted.
@@ -90,13 +90,13 @@ class VoIPLib {
      *
      */
     val version
-        get() = linphoneCoreInstanceManager.safeLinphoneCore?.version ?: ""
+        get() = mifoneCoreInstanceManager.safeLinphoneCore?.version ?: ""
 
     fun refreshRegistration() {
-        linphoneCoreInstanceManager.safeLinphoneCore?.refreshRegisters()
+        mifoneCoreInstanceManager.safeLinphoneCore?.refreshRegisters()
     }
 
     fun startEchoCancellerCalibration() {
-        linphoneCoreInstanceManager.safeLinphoneCore?.startEchoCancellerCalibration()
+        mifoneCoreInstanceManager.safeLinphoneCore?.startEchoCancellerCalibration()
     }
 }

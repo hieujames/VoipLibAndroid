@@ -19,7 +19,7 @@ import java.io.FileOutputStream
 import java.util.*
 import org.linphone.core.Call as LinphoneCall
 
-internal class LinphoneCoreInstanceManager(private val context: Context): SimpleCoreListener, LoggingServiceListener {
+internal class LinphoneCoreInstanceManager(private val context: Context): SimpleCoreListener {
 
     internal val state = CoreState()
 
@@ -35,43 +35,43 @@ internal class LinphoneCoreInstanceManager(private val context: Context): Simple
             return if (state.initialized) {
                 linphoneCore
             } else {
-                Log.e(TAG, "Trying to get linphone core while not possible", Exception())
+                Log.e(TAG, "Trying to get mifone core while not possible", Exception())
                 null
             }
         }
 
     /**
-     * Certain files need to be available to Linphone via the file system, rather than through a
-     * native resource. Each time we initialize Linphone we will copy the resource to the file
+     * Certain files need to be available to MiFone via the file system, rather than through a
+     * native resource. Each time we initialize MiFone we will copy the resource to the file
      * location listed.
      */
     private val filesToPublish = mapOf(
         R.raw.ringback to "ringback.wav"
     )
 
-    fun initializeLinphone(config: Config) {
+    fun initializeMiFone(config: Config) {
         this.voipLibConfig = config
 
         if (linphoneCore != null) {
-            config.logListener?.onLogMessageWritten(LogLevel.WARNING, "Not initializing linphone, already initialized.")
+            config.logListener?.onLogMessageWritten(LogLevel.WARNING, "Not initializing MiFone, already initialized.")
             return
         }
 
         try {
             publishResources()
-            startLibLinphone()
+            startLibMiFone()
         } catch (e: Exception) {
-            config.logListener?.onLogMessageWritten(LogLevel.ERROR, "Failed to start Linphone: ${e.localizedMessage}")
-            Log.e(TAG, "startLibLinphone: cannot start linphone")
+            config.logListener?.onLogMessageWritten(LogLevel.ERROR, "Failed to start MiFone")
+            Log.e(TAG, "startLibMiFone: cannot start MiFone")
         }
     }
 
     @Synchronized
     @Throws(Exception::class)
-    private fun startLibLinphone() {
+    private fun startLibMiFone() {
         logging.setLogLevel(Warning)
 
-        voipLibConfig.logListener.let { logging.addListener(this) }
+        // voipLibConfig.logListener.let { logging.addListener(this) }
         val factory = Factory.instance()
         this.linphoneCore = factory.createCore(null, null, context)
         linphoneCore?.isKeepAliveEnabled = true
@@ -127,7 +127,7 @@ internal class LinphoneCoreInstanceManager(private val context: Context): Simple
         File("${context.filesDir}/${PUBLISH_DIRECTORY_NAME}/$filename")
 
     /**
-     * Creates the Linphone core by reading in the linphone raw configuration file.
+     * Creates the MiFone core by reading in the MiFone raw configuration file.
      *
      */
     private fun createLinphoneCore(context: Context) =
@@ -258,7 +258,7 @@ internal class LinphoneCoreInstanceManager(private val context: Context): Simple
         Log.e(TAG, "onSubscribeReceived: Not yet implemented")
     }
 
-    override fun onLogMessageWritten(service: LoggingService, domain: String, lev: org.linphone.core.LogLevel, message: String) {
+    /*override fun onLogMessageWritten(service: LoggingService, domain: String, lev: org.linphone.core.LogLevel, message: String) {
         GlobalScope.launch(Dispatchers.IO) {
             voipLibConfig.logListener?.onLogMessageWritten(when (lev) {
                 Debug -> LogLevel.DEBUG
@@ -269,7 +269,7 @@ internal class LinphoneCoreInstanceManager(private val context: Context): Simple
                 Fatal -> LogLevel.FATAL
             }, message)
         }
-    }
+    }*/
 
     companion object {
         const val TAG = "VOIPLIB-LINPHONE"

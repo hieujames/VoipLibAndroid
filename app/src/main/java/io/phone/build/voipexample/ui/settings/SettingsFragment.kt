@@ -20,6 +20,7 @@ import kotlinx.coroutines.launch
 import io.phone.build.voiplib.example.VoIPGRIDMiddleware
 import io.phone.build.voipsdkandroid.PIL
 import io.phone.build.voipsdkandroid.configuration.Auth
+import io.phone.build.voipsdkandroid.configuration.AuthAssistant
 import org.json.JSONObject
 
 class SettingsFragment : PreferenceFragmentCompat() {
@@ -251,52 +252,6 @@ class SettingsFragment : PreferenceFragmentCompat() {
         findPreference<Preference>("status")?.summaryProvider = Preference.SummaryProvider<Preference> {
             "Checking authentication..."
         }
-
-//        val tripleEncodedToken = pil.decodeTokenThreeTimes(token.toString())
-//        println("[RETURN] Token đã mã hóa 3 lần: $tripleEncodedToken")
-//
-//        if (tripleEncodedToken != null) {
-//
-//            val key = "b6aed9ab7cdf85432c321757b4d48153"
-//            val slicedStrings = pil.sliceStringWithKey(tripleEncodedToken, key)
-//            println("[RETURN] Chuỗi đã cắt: $slicedStrings")
-//            val decodedParts = pil.decodeEachPart(slicedStrings)
-//            println("[RETURN] Các phần tử đã giải mã: $decodedParts")
-//            decodedParts.forEachIndexed { index, part ->
-//                println("Phần tử $index: $part")
-//                val username = part[3].toString()
-//                val password = part[4].toString()
-//                val domain = part[0].toString()
-//                val port = 5567
-//                val proxy = part[2].toString()
-//                val transport = part[5].toString()
-//
-//                if (username.isNotBlank() && password.isNotBlank() && domain.isNotBlank() && port != 0 && proxy.isNotBlank() && transport.isNotBlank()) {
-//                    pil.auth = Auth(
-//                        username = username,
-//                        password = password,
-//                        domain = domain,
-//                        port = port,
-//                        proxy = proxy,
-//                        transport = transport,
-//                        secure = true
-//                    )
-//                }
-//
-//                GlobalScope.launch(Dispatchers.IO) {
-//                    val summary = if (pil.performRegistrationCheck()) "Authenticated" else "Authentication failed"
-//
-//                    activity?.runOnUiThread {
-//                        findPreference<Preference>("status")?.summaryProvider = Preference.SummaryProvider<Preference> {
-//                            summary
-//                        }
-//                    }
-//                }
-//            }
-//
-//        } else {
-//            println("[RETURN] Mã hóa thất bại")
-//        }
     }
 
     /**
@@ -308,24 +263,7 @@ class SettingsFragment : PreferenceFragmentCompat() {
             "Checking authentication..."
         }
 
-        val username = prefs.getString("username", "") ?: ""
-        val password = prefs.getString("password", "") ?: ""
-        val domain = prefs.getString("domain", "") ?: ""
-        val port = (prefs.getString("port", "0") ?: "0").toInt()
-        val proxy = prefs.getString("proxy", "") ?: ""
-        val transport = prefs.getString("transport", "") ?: ""
-
-        if (username.isNotBlank() && password.isNotBlank() && domain.isNotBlank() && port != 0 && proxy.isNotBlank() && transport.isNotBlank()) {
-            pil.auth = Auth(
-                username = username,
-                password = password,
-                domain = domain,
-                port = port,
-                proxy = proxy,
-                transport = transport,
-                secure = true
-            )
-        }
+        pil.fetchAuth()
 
         GlobalScope.launch(Dispatchers.IO) {
             val summary = if (pil.performRegistrationCheck()) "Authenticated" else "Authentication failed"

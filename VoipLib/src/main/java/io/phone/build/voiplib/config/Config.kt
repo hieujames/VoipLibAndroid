@@ -4,8 +4,9 @@ import io.phone.build.voiplib.model.Codec
 import io.phone.build.voiplib.model.Codec.*
 import io.phone.build.voiplib.repository.initialize.CallListener
 import io.phone.build.voiplib.repository.initialize.LogListener
-import io.phone.build.voipsdkandroid.call.VoipLibEventTranslator
 import io.phone.build.voipsdkandroid.logging.LogManager
+import io.phone.build.voipsdkandroid.service.LicenceRequest
+
 typealias GlobalStateCallback = () -> Unit
 
 data class Config(
@@ -28,4 +29,5 @@ data class Config(
         val userAgent: String = "AndroidVoIPLib",
         val onReady: GlobalStateCallback = {},
         val onDestroy: GlobalStateCallback = {},
+        val onLicence: suspend (licenceKey: String, accessToken: String) -> Boolean = { _, _ -> true }
 )

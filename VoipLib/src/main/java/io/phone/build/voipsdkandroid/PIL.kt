@@ -25,13 +25,13 @@ import io.phone.build.voipsdkandroid.helpers.VoIPLibHelper
 import io.phone.build.voipsdkandroid.logging.LogLevel
 import io.phone.build.voipsdkandroid.logging.LogManager
 import io.phone.build.voipsdkandroid.notifications.NotificationManager
-import io.phone.build.voipsdkandroid.push.TokenFetcher
 import io.phone.build.voipsdkandroid.telecom.AndroidCallFramework
 import io.phone.build.voiplib.VoIPLib
 import io.phone.build.voiplib.config.Config
 import io.phone.build.voiplib.model.Codec
 import io.phone.build.voiplib.model.RegistrationState.FAILED
 import io.phone.build.voiplib.model.RegistrationState.REGISTERED
+import io.phone.build.voipsdkandroid.configuration.AuthAssistant
 import kotlin.coroutines.resume
 import kotlin.coroutines.suspendCoroutine
 
@@ -63,20 +63,14 @@ class PIL internal constructor(internal val app: ApplicationSetup) {
 
     var preferences: Preferences = Preferences.DEFAULT
 
+    var licenceConfig: AuthAssistant? = null
+
     var auth: Auth? = null
 
     init {
         instance = this
         events.listen(platformIntegrator)
 
-        voipLib.initialize(
-            Config(
-                callListener = voipLibEventTranslator,
-                logListener = logManager,
-                codecs = arrayOf(Codec.OPUS),
-                userAgent = app.userAgent
-            )
-        )
     }
 
     /**
@@ -132,7 +126,6 @@ class PIL internal constructor(internal val app: ApplicationSetup) {
         }
 
         androidCallFramework.prune()
-
         if (auth.isNullOrInvalid) throw NoAuthenticationCredentialsException()
 
         // pushToken.request()
@@ -209,6 +202,79 @@ class PIL internal constructor(internal val app: ApplicationSetup) {
         voipLib.startEchoCancellerCalibration()
     }
 
+    suspend fun startedCore(): Boolean = suspendCoroutine { continuation ->
+        try {
+            val licenceKey = licenceConfig?.licencesKey ?: throw IllegalArgumentException("Licence key is missing")
+
+            if (!validateLicence(licenceKey)) {
+                throw InvalidLicenceException("The provided licence key or access token is invalid")
+            }
+
+            if (licenceConfig?.isValid == false) {
+                continuation.resume(false)
+                return@suspendCoroutine
+            }
+
+            voipLib.initialize(
+                Config(
+                    callListener = voipLibEventTranslator,
+                    logListener = logManager,
+                    codecs = arrayOf(Codec.OPUS),
+                    userAgent = app.userAgent,
+                )
+            )
+
+        }catch (e: InvalidLicenceException) {
+            log("[PIL-ERROR]" + "Failed to start PIL: ${e.message}")
+        } catch (e: Exception) {
+            continuation.resume(false)
+        }
+    }
+
+    fun fetchAuth(): Auth? {
+        val tripleEncodedToken = decodeTokenThreeTimes(licenceConfig?.accessToken.toString())
+
+        if (tripleEncodedToken != null) {
+            val key = "b6aed9ab7cdf85432c321757b4d48153"
+            val slicedStrings = sliceStringWithKey(tripleEncodedToken, key)
+            val decodedParts = decodeEachPart(slicedStrings)
+            if (decodedParts.size >= 6) {
+                val username = decodedParts[3].toString()
+                val password = decodedParts[4].toString()
+                val domain = decodedParts[0].toString()
+                val port =  5567
+                val proxy = decodedParts[2].toString()
+                val transport = decodedParts[5].toString()
+
+                log("[PIL-SUCCESS] GetAuth Successfully!")
+
+                if (username.isNotBlank() && password.isNotBlank() && domain.isNotBlank() && proxy.isNotBlank() && transport.isNotBlank()) {
+                    auth = Auth(
+                        username = username,
+                        password = password,
+                        domain = domain,
+                        port = port,
+                        proxy = proxy,
+                        transport = transport,
+                        secure = true
+                    )
+                }
+            } else {
+                println("Phần tử 1 không có đủ ký tự để truy cập các vị trí cần thiết")
+            }
+            /*decodedParts.forEachIndexed { index, part ->
+
+            }*/
+        }
+
+
+        return try {
+            auth
+        } catch (e: Exception) {
+            null
+        }
+    }
+
     /**
      * Attempt to boot and register to see if user credentials are correct. This can be used
      * to check the user's credentials after they have supplied them.
@@ -216,6 +282,17 @@ class PIL internal constructor(internal val app: ApplicationSetup) {
      */
     suspend fun performRegistrationCheck(): Boolean = suspendCoroutine { continuation ->
         try {
+            val licenceKey = licenceConfig?.licencesKey ?: throw IllegalArgumentException("Licence key is missing")
+
+            if (!validateLicence(licenceKey)) {
+                throw InvalidLicenceException("The provided licence key or access token is invalid")
+            }
+
+            if (licenceConfig?.isValid == false) {
+                continuation.resume(false)
+                return@suspendCoroutine
+            }
+
             if (auth?.isValid == false) {
                 continuation.resume(false)
                 return@suspendCoroutine
@@ -230,9 +307,33 @@ class PIL internal constructor(internal val app: ApplicationSetup) {
                     }
                 }
             }
+        }catch (e: InvalidLicenceException) {
+            log("[PIL-ERROR]" + "Failed to start PIL: ${e.message}")
         } catch (e: Exception) {
             continuation.resume(false)
         }
+    }
+
+    private fun validateLicence(licenceKey: String): Boolean {
+        return try {
+            if(licenceKey.equals("trialabc")){
+                true
+            } else {
+                log("Lõ quá Lõ, cook giùm cái")
+                throw InvalidLicenceException(
+                    message = "Licence validation failed",
+                    errorCode = 400,
+                    details = "Lõ quá Lõ, cook giùm cái"
+                )
+                false
+            }
+        } catch (e: Exception) {
+            throw InvalidLicenceException(
+                message = "Licence validation encountered an error",
+                details = e.localizedMessage
+            )
+        }
+        false
     }
 
     companion object {
