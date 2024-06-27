@@ -17,12 +17,12 @@ dependencyResolutionManagement {
         }
         maven { url 'https://jitpack.io' }
 //        maven { file(LinphoneSdkBuildDir) }
-//        maven { url 'https://repositoriesmitek.jfrog.io/artifactory/downloadrepo-libs-release/'
-//            credentials {
-//                username = project.findProperty("myRepoUsername") ?: ""
-//                password = project.findProperty("myRepoPassword") ?: ""
-//            }
-//        }
+        maven { url 'https://repositoriesmitek.jfrog.io/artifactory/downloadrepo-libs-release/'
+            credentials {
+                username = "hieujames741@gmail.com"
+                password = "cmVmdGtuOjAxOjE3NTA3MzEwODI6UmNieUpyN2hBMzNaYU5OZ3d2N1BNTmlyUURU"
+            }
+        }
     }
 }
 
