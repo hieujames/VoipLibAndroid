@@ -45,6 +45,51 @@ android {
 }*/
 
 afterEvaluate {
+    publishing {
+        publications {
+            // Create a publication for each variant
+            android.libraryVariants.all { variant ->
+                create(variant.name, MavenPublication) {
+                    from components.findByName(variant.name)
+
+                    groupId = "com.github.hieujames"
+                    artifactId = "VoipLibAndroid"
+                    version = "1.1.7"
+
+                    // Optionally configure the pom
+                    pom {
+                        name.set("VoipLibAndroid")
+                        description.set("A VoIP library for Android")
+                        url.set("https://github.com/hieujames/VoipLibAndroid")
+
+                        licenses {
+                            license {
+                                name.set("The Apache License, Version 2.0")
+                                url.set("http://www.apache.org/licenses/LICENSE-2.0.txt")
+                            }
+                        }
+
+                        developers {
+                            developer {
+                                id.set("hieujames")
+                                name.set("Hieu James")
+                                email.set("hieu.james@example.com")
+                            }
+                        }
+
+                        scm {
+                            connection.set("scm:git:github.com/hieujames/VoipLibAndroid.git")
+                            developerConnection.set("scm:git:ssh://github.com/hieujames/VoipLibAndroid.git")
+                            url.set("https://github.com/hieujames/VoipLibAndroid")
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+
+/*afterEvaluate {
     android.libraryVariants.each { variant->
         publishing.publications.create(variant.name, MavenPublication) {
             from components.findByName(variant.name)
@@ -54,7 +99,7 @@ afterEvaluate {
             version= "1.1.6"
         }
     }
-}
+}*/
 
 task androidJavadocs(type: Javadoc){
     source = android.sourceSets.main.java.srcDirs
