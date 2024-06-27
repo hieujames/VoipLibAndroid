@@ -44,7 +44,7 @@ android {
     }
 }*/
 
-afterEvaluate {
+/*afterEvaluate {
     publishing {
         publications {
             // Create a publication for each variant
@@ -87,19 +87,19 @@ afterEvaluate {
             }
         }
     }
-}
+}*/
 
-/*afterEvaluate {
+afterEvaluate {
     android.libraryVariants.each { variant->
         publishing.publications.create(variant.name, MavenPublication) {
             from components.findByName(variant.name)
 
             groupId = "com.github.hieujames"
             artifactId = "VoipLibAndroid"
-            version= "1.1.6"
+            version= "1.1.9"
         }
     }
-}*/
+}
 
 task androidJavadocs(type: Javadoc){
     source = android.sourceSets.main.java.srcDirs
