@@ -38,7 +38,7 @@ afterEvaluate {
 
             groupId = "com.github.hieujames"
             artifactId = "VoipLibAndroid"
-            version= "1.1.2"
+            version= "1.1.3"
         }
     }
 }
@@ -83,12 +83,12 @@ dependencies {
 }
 
 task clearJar(type: Delete){
-    delete 'build/libs/voip-lib-android.jar'
+    delete 'libs/voip-lib-android.jar'
 }
 
 task makeJar(type: Copy){
-    from('build/intermediates/bundles/release/')
-    into('build/libs/')
+    from('build/intermediates/aar_main_jar/release/')
+    into('libs')
     include('classes.jar')
     rename('classes.jar', 'voip-lib-android.jar')
 }
